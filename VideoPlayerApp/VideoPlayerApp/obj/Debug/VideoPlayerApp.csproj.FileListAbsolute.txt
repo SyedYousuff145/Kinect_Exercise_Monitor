@@ -1,0 +1,12 @@
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\bin\Debug\VideoPlayerApp.exe.config
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\bin\Debug\VideoPlayerApp.exe
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\bin\Debug\VideoPlayerApp.pdb
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\MainWindow.baml
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\MainWindow.g.cs
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\App.g.cs
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\VideoPlayerApp_MarkupCompile.cache
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\VideoPlayerApp.g.resources
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\VideoPlayerApp.Properties.Resources.resources
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\VideoPlayerApp.csproj.GenerateResource.Cache
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\VideoPlayerApp.exe
+c:\users\sidpee\documents\visual studio 2013\Projects\VideoPlayerApp\VideoPlayerApp\obj\Debug\VideoPlayerApp.pdb
