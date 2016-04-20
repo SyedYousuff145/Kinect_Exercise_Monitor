@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using LightBuzz.Vitruvius;
+using System.Windows.Threading;
 
 namespace KinectStreams
 {
@@ -27,14 +28,17 @@ namespace KinectStreams
         #region Members
 
         int STATE = 0;
+        int Exercise = 1;
+        int num_of_exercises = 2;
 
-        Mode _mode = Mode.Color;
+        int Started = 0;
 
         KinectSensor _sensor;
         MultiSourceFrameReader _reader;
         IList<Body> _bodies;
 
         bool _displayBody = false;
+        DispatcherTimer timer = null;
 
         #endregion
 
@@ -43,9 +47,21 @@ namespace KinectStreams
         public MainWindow()
         {
             InitializeComponent();
+            
+            mePlayer.MediaEnded += MePlayer_MediaEnded;
+            timer = new DispatcherTimer();
+
+        }
+
+        private void MePlayer_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            mePlayer.Position = new System.TimeSpan(0);            
         }
 
         #endregion
+
+       
 
         #region Event handlers
 
@@ -77,6 +93,30 @@ namespace KinectStreams
 
         void Reader_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
+            if (Started == 0)
+            {
+                switch(Exercise)
+                {
+                    case 1:
+                        mePlayer.Source = new System.Uri("file:///D:/Work/Projects/Kinect/KinectStreams/1.mp4");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(2);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
+                        break;
+                    case 2:
+                        mePlayer.Source = new System.Uri("file:///D:/Work/Projects/Kinect/KinectStreams/2.mp4");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(2);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
+                        break;
+                }
+                
+                Started = 1;
+                
+            }
+
             var reference = e.FrameReference.AcquireFrame();
 
             // Color
@@ -84,36 +124,12 @@ namespace KinectStreams
             {
                 if (frame != null)
                 {
-                    if (_mode == Mode.Color)
-                    {
-                        camera.Source = frame.ToBitmap();
-                    }
+                    camera.Source = frame.ToBitmap();
+
                 }
             }
 
-            // Depth
-            using (var frame = reference.DepthFrameReference.AcquireFrame())
-            {
-                if (frame != null)
-                {
-                    if (_mode == Mode.Depth)
-                    {
-                        camera.Source = frame.ToBitmap();
-                    }
-                }
-            }
-
-            // Infrared
-            using (var frame = reference.InfraredFrameReference.AcquireFrame())
-            {
-                if (frame != null)
-                {
-                    if (_mode == Mode.Infrared)
-                    {
-                        camera.Source = frame.ToBitmap();
-                    }
-                }
-            }
+           
 
             // Body
             using (var frame = reference.BodyFrameReference.AcquireFrame())
@@ -148,40 +164,43 @@ namespace KinectStreams
                     if (closest_body != null)
                     {
                         canvas.DrawSkeleton(closest_body);
-                        exercise_1(closest_body);
-                    }
-
-
-                    /*
-                    foreach (var body in _bodies)
-                    {
-                        if (body != null)
+                        switch(Exercise)
                         {
-                            if (body.IsTracked)
-                            {
-                                // Draw skeleton.
-                                if (_displayBody)
-                                {
-                                    canvas.DrawSkeleton(body);
-                                }
-                            }
+                            case 1: exercise_1(closest_body); break;
+                            case 2: exercise_1(closest_body); break;
                         }
+                        
                     }
-                    */
 
                 }
             }
         }
 
+        void timer_Tick(object sender, EventArgs e)
+        {
+            if (mePlayer.Source != null)
+            {
+                mePlayer.Pause();
+            }
+        }
+
+        #endregion
+
         private void exercise_1(Body body)
         {
-            switch(STATE)
+            switch (STATE)
             {
                 case 0:
+
                     if (check_state_1_0(body) == "success")
                     {
                         STATE = 1;
                         Debug.WriteLine("Exercise started");
+
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(5);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
                     }
 
                     break;
@@ -191,14 +210,22 @@ namespace KinectStreams
                     {
                         STATE = 2;
                         Debug.WriteLine("State 1 complete");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(5);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
                     }
                     break;
 
                 case 2:
-                    if(check_state_1_2(body) == "success")
+                    if (check_state_1_2(body) == "success")
                     {
                         STATE = 3;
                         Debug.WriteLine("State 2 complete");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(5);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
                     }
                     break;
 
@@ -207,6 +234,10 @@ namespace KinectStreams
                     {
                         STATE = 4;
                         Debug.WriteLine("State 3 complete");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(5);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
                     }
                     break;
 
@@ -215,6 +246,10 @@ namespace KinectStreams
                     {
                         STATE = 5;
                         Debug.WriteLine("State 4 complete");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(5);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
                     }
                     break;
 
@@ -223,10 +258,19 @@ namespace KinectStreams
                     {
                         STATE = 6;
                         Debug.WriteLine("Exercise complete");
+                        mePlayer.Play();
+                        timer.Interval = TimeSpan.FromSeconds(5);
+                        timer.Tick += timer_Tick;
+                        timer.Start();
                     }
                     break;
 
             }
+        }
+
+        private void exercise_2(Body body)
+        {
+
         }
 
         private String check_state_1_0(Body body)
@@ -237,7 +281,7 @@ namespace KinectStreams
             var shoulderLeft = body.Joints[JointType.ShoulderLeft];
             var shoulderRight = body.Joints[JointType.ShoulderRight];
 
-            if(wristLeft.Position.X < shoulderLeft.Position.X && wristRight.Position.X > shoulderRight.Position.X)
+            if (wristLeft.Position.X < shoulderLeft.Position.X && wristRight.Position.X > shoulderRight.Position.X)
             {
                 if (wristLeft.Position.Y > shoulderLeft.Position.Y && wristRight.Position.Y > shoulderRight.Position.Y)
                     return "success";
@@ -271,14 +315,14 @@ namespace KinectStreams
 
             if (almostSame_dist(head.Position.Z, shoulderLeft.Position.Z) && almostSame_dist(shoulderLeft.Position.Z, shoulderRight.Position.Z) && almostSame_dist(head.Position.Z, spineMid.Position.Z))
             {
-                if(almost180(elbowLeft.Angle(shoulderLeft, wristLeft)) && almost180(elbowRight.Angle(shoulderRight, wristRight)))
+                if (almost180(elbowLeft.Angle(shoulderLeft, wristLeft)) && almost180(elbowRight.Angle(shoulderRight, wristRight)))
                 {
-                    if(almost90(shoulderLeft.Angle(spineShoulder, elbowLeft)) && almost90(shoulderRight.Angle(spineShoulder, elbowRight)))
+                    if (almost90(shoulderLeft.Angle(spineShoulder, elbowLeft)) && almost90(shoulderRight.Angle(spineShoulder, elbowRight)))
                     {
                         //if(wristLeft.Position.Y < shoulderLeft.Position.Y && wristRight.Position.Y > shoulderRight.Position.Y)
-                            return "success";
+                        return "success";
                     }
-                        
+
                 }
             }
 
@@ -299,12 +343,12 @@ namespace KinectStreams
             var shoulderLeft = body.Joints[JointType.ShoulderLeft];
             var shoulderRight = body.Joints[JointType.ShoulderRight];
 
-            if(almost180(shoulderRight.Angle(spineShoulder, elbowRight)) && almost180(shoulderLeft.Angle(spineShoulder, elbowLeft)))
+            if (almost180(shoulderRight.Angle(spineShoulder, elbowRight)) && almost180(shoulderLeft.Angle(spineShoulder, elbowLeft)))
             {
-                if(almost180(elbowRight.Angle(shoulderRight, wristRight)) && almost180(elbowLeft.Angle(shoulderLeft, wristLeft)))
+                if (almost180(elbowRight.Angle(shoulderRight, wristRight)) && almost180(elbowLeft.Angle(shoulderLeft, wristLeft)))
                 {
                     //if (wristLeft.Position.Y > shoulderLeft.Position.Y && wristRight.Position.Y > shoulderRight.Position.Y)
-                        return "success";
+                    return "success";
                 }
             }
 
@@ -345,11 +389,11 @@ namespace KinectStreams
             if (Math.Abs(a - b) > 0.05)
                 return false;
             else
-                return true; 
+                return true;
         }
 
         private bool almost180(double a)
-        {            
+        {
             if (Math.Abs(a - 180) < 30)
                 return true;
             else
@@ -365,33 +409,42 @@ namespace KinectStreams
         }
 
 
-        private void Color_Click(object sender, RoutedEventArgs e)
+        #region Click Handlers
+
+        private void Previous_Click(object sender, RoutedEventArgs e)
         {
-            _mode = Mode.Color;
+           
+            STATE = 0;
+            Started = 0;
+            Exercise--;
+            if(Exercise < 1)
+            {
+                Exercise = 1;
+            }
         }
 
-        private void Depth_Click(object sender, RoutedEventArgs e)
+        private void Restart_Click(object sender, RoutedEventArgs e)
         {
-            _mode = Mode.Depth;
+            Started = 0;
+            STATE = 0;
+
+            //Restart the video
+            mePlayer.Position = new System.TimeSpan(0);
         }
 
-        private void Infrared_Click(object sender, RoutedEventArgs e)
+        private void Next_Click(object sender, RoutedEventArgs e)
         {
-            _mode = Mode.Infrared;
-        }
+            STATE = 0;
+            Started = 0;
 
-        private void Body_Click(object sender, RoutedEventArgs e)
-        {
-            _displayBody = !_displayBody;
+            //Go to next exercise.
+            Exercise++;
+            if(Exercise > num_of_exercises)
+            {
+                Exercise = num_of_exercises;
+            }
         }
 
         #endregion
-    }
-
-    public enum Mode
-    {
-        Color,
-        Depth,
-        Infrared
     }
 }
